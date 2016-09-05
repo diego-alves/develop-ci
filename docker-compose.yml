@@ -1,14 +1,29 @@
 version: '2'
 services:
-    sonar:
-        build: ./sonar
-        ports:
-            - "9000:9000"
-            - "9092:9092"
-    jenkins:
-        build: ./jenkins
-        ports:
-            - "8080:8080"
-            - "50000:50000"
-        depends_on:
-            - sonar
+  sonar:
+    build: ./sonar
+    image: dev-sonar
+    container_name: dev-sonar
+    ports:
+    - 9000:9000
+    - 9092:9092
+  gitlab:
+    build: ./gitlab
+    image: dev-gitlab
+    container_name: dev-gitlab
+    ports:
+    - 80:80
+    - 22:22
+    - 443:443
+  jenkins:
+    build: ./jenkins
+    image: dev-jenkins
+    container_name: dev-jenkins
+    volumes:
+    - ./jenkins/home/:/var/jenkins_home
+    ports:
+    - 8080:8080
+    - 50000:50000
+    links:
+      - sonar
+      - gitlab
